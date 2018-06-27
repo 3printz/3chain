@@ -3,7 +3,7 @@ package main
 func executeContract(contract string) {
 	println("executing... " + contract)
 
-	// TODO save event processing event by chainz
+	// TODO save event (processing event)
 
 	//z := "DATA #status done #qnt 323 " +
 
