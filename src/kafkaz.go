@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/Shopify/sarama"
 	"github.com/wvanbergen/kafka/consumergroup"
-	"log"
+	//"log"
 	"os"
 	"time"
 )
@@ -14,7 +14,7 @@ var kchan = make(chan Kmsg, 10)
 
 func initKafkaz() {
 	//setup sarama log to stdout
-	sarama.Logger = log.New(os.Stdout, "", log.Ltime)
+	//sarama.Logger = log.New(os.Stdout, "", log.Ltime)
 
 	// consuner
 	cg := initConzumer()
@@ -22,7 +22,7 @@ func initKafkaz() {
 
 	// producer
 	pr := initProduzer()
-	go produze(pr)
+	produze(pr)
 }
 
 func initConzumer() *consumergroup.ConsumerGroup {
@@ -33,8 +33,8 @@ func initConzumer() *consumergroup.ConsumerGroup {
 
 	// join to consumer group
 	zookeeperConn := kafkaConfig.zhost + ":" + kafkaConfig.zport
-	cg, err := consumergroup.JoinConsumerGroup(kafkaConfig.cgroup,
-		[]string{kafkaConfig.topic},
+	cg, err := consumergroup.JoinConsumerGroup("chainzg",
+		[]string{"chainz"},
 		[]string{zookeeperConn},
 		config)
 	if err != nil {
@@ -69,7 +69,7 @@ func conzume(cg *consumergroup.ConsumerGroup) {
 		case msg := <-cg.Messages():
 			// messages coming through chanel
 			// only take messages from subscribed topic
-			if msg.Topic != kafkaConfig.topic {
+			if msg.Topic != "chainz" {
 				continue
 			}
 
@@ -83,12 +83,8 @@ func conzume(cg *consumergroup.ConsumerGroup) {
 				fmt.Println("Error commit zookeeper: ", err.Error())
 			}
 
-			// TODO start goroutene to handle the senz message
-			kmsg := Kmsg{
-				Topic: "order",
-				Msg:   z,
-			}
-			kchan <- kmsg
+			// start goroutene to handle the senz message
+			go executeContract(z)
 		}
 	}
 }
