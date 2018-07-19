@@ -103,7 +103,7 @@ func produze(pr sarama.SyncProducer) {
 			if err != nil {
 				fmt.Println("Error publish: ", err.Error())
 			}
-			fmt.Println("Published msg, partition, offset: ", kmsg.Msg, p, o)
+			fmt.Println("Published msg, partition, offset, topic: ", kmsg.Msg, p, o, kmsg.Topic)
 		}
 	}
 }
