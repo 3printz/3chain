@@ -17,7 +17,7 @@ func executeContract(z string) {
 
 	// TODO execute contract function
 	kmsg := Kmsg{
-		Topic: "orderzresp",
+		Topic: "opsresp",
 		Msg:   rz,
 	}
 	kchan <- kmsg
