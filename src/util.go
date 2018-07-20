@@ -74,68 +74,10 @@ func timestamp() int64 {
 	return time.Now().UnixNano() / int64(time.Millisecond)
 }
 
-func senzToTrans(senz *Senz) *Trans {
-	trans := &Trans{}
-	trans.Bank = config.senzieName
-	trans.Id = uuid()
-	trans.Timestamp = timestamp()
-	trans.FromZaddress = senz.Sender
-	trans.ToZaddress = senz.Receiver
-	trans.PromizeBlob = "actual contract"
-	trans.Type = senz.Attr["contract"]
-	trans.Digsig = senz.Digsig
-
-	return trans
-}
-
-func eventTrans(from string, to string, event string) *Trans {
-	trans := &Trans{}
-	trans.Bank = config.senzieName
-	trans.Id = uuid()
-	trans.Timestamp = timestamp()
-	trans.FromZaddress = from
-	trans.ToZaddress = to
-	trans.PromizeBlob = "actual contract"
-	trans.Type = event
-
-	return trans
-}
-
-func senzToUser(senz *Senz) *User {
-	user := &User{}
-	user.Zaddress = senz.Sender
-	user.Bank = config.senzieName
-	user.PublicKey = senz.Attr["pubkey"]
-	user.Verified = false
-	user.Active = true
-	user.Timestamp = timestamp()
-
-	return user
-}
-
-func regSenz() string {
-	z := "SHARE #pubkey " + getIdRsaPubStr() +
-		" #uid " + uid() +
-		" @" + config.switchName +
-		" ^" + config.senzieName
-	s, _ := sign(z, getIdRsa())
-
-	return z + " " + s
-}
-
-func awaSenz(uid string) string {
-	z := "AWA #uid " + uid +
-		" @" + config.switchName +
-		" ^" + config.senzieName
-	s, _ := sign(z, getIdRsa())
-
-	return z + " " + s
-}
-
-func statusSenz(status string, uid string, to string) string {
-	z := "DATA #status " + status +
-		" #uid " + uid +
-		" @" + to +
+func respSenz(uid string, status string, receiver string) string {
+	z := "DATA #uid " + uid +
+		" #print " + status +
+		" @" + receiver +
 		" ^" + config.senzieName
 	s, _ := sign(z, getIdRsa())
 
