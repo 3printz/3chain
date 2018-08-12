@@ -5,20 +5,32 @@ func executeContract(z string) {
 
 	senz := parse(z)
 
-	// save event (request received)
-	//t := eventTrans("orderzreq", "chainz", "Contract request received")
-	//createTrans(t)
+	if senz.Attr["type"] == "PREQ" {
+		// handle purchase order
+		// TODO check weather given item/design exists
+		rz := respSenz(senz.Attr["uid"], "DONE", "3ops")
+		kmsg := Kmsg{
+			Topic: "opsresp",
+			Msg:   rz,
+		}
+		kchan <- kmsg
 
-	rz := respSenz(senz.Attr["uid"], "DONE", "opsresp")
-
-	// save event (response send)
-	//t = eventTrans("chainz", "orderzresp", "Forward contract request")
-	//createTrans(t)
-
-	// TODO execute contract function
-	kmsg := Kmsg{
-		Topic: "opsresp",
-		Msg:   rz,
+		return
 	}
-	kchan <- kmsg
+
+	if senz.Attr["type"] == "PORD" {
+		// handle purchase order
+		// call oem to get design
+		notifyPord()
+
+		return
+	}
+
+	if senz.Attr["type"] == "PRINT" {
+		// handle print request
+		// call amc to print
+		notifyPrnt()
+
+		return
+	}
 }
