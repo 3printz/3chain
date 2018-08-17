@@ -74,9 +74,10 @@ func timestamp() int64 {
 	return time.Now().UnixNano() / int64(time.Millisecond)
 }
 
-func respSenz(uid string, status string, receiver string) string {
+func respSenz(uid string, status string, receiver string, zid string) string {
 	z := "DATA #uid " + uid +
-		" #print " + status +
+		" #match " + status +
+		" #zid " + zid +
 		" @" + receiver +
 		" ^" + config.senzieName
 	s, _ := sign(z, getIdRsa())
