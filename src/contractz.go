@@ -14,11 +14,11 @@ func executeContract(z string) {
 		// matching logic
 		// TODO check with calling biz api
 		var rz string
-		if strings.EqualFold(senz.Attr["location"], "singapore") && config.senzieName == "amc1" {
+		if strings.EqualFold(senz.Attr["location"], "singapore") {
 			// with amc1
 			zid := "8c43a1e0-794f-11e8-8c3a-2f9c177c5396"
 			rz = respSenz(senz.Attr["uid"], "YES", "3ops", zid)
-		} else if strings.EqualFold(senz.Attr["location"], "malaysia") && config.senzieName == "amc2" {
+		} else if strings.EqualFold(senz.Attr["location"], "malaysia") {
 			// with amc2
 			zid := "937ed420-794f-11e8-8c3a-2f9c177c5396"
 			rz = respSenz(senz.Attr["uid"], "YES", "3ops", zid)
