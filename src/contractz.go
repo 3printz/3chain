@@ -38,7 +38,7 @@ func executeContract(z string) {
 	if senz.Attr["type"] == "PORD" {
 		// handle purchase order
 		// call oem to get design
-		notifyPord()
+		//notifyPorder(senz)
 
 		return
 	}

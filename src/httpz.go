@@ -15,6 +15,16 @@ type NotifyPo struct {
 	Status string
 }
 
+type NotifyAmc struct {
+	PO_ID  string
+	AMC_ID string
+}
+
+type NotifyOem struct {
+	PO_ID  string
+	OEM_ID string
+}
+
 type NotifyPnt struct {
 	Oem    string
 	Amc    string
@@ -53,7 +63,25 @@ func notifyPord() {
 	}
 }
 
-func notifyPrnt() {
+func notifyPorder(senz Senz) {
+	// notify amc
+	obj1 := NotifyAmc{
+		PO_ID:  senz.Attr["poid"],
+		AMC_ID: senz.Attr["amcid"],
+	}
+	j, _ := json.Marshal(obj1)
+	notify(j, senz.Attr["amcapi"])
+
+	// notify oem
+	obj2 := NotifyOem{
+		PO_ID:  senz.Attr["poid"],
+		OEM_ID: senz.Attr["oemid"],
+	}
+	j, _ = json.Marshal(obj2)
+	notify(j, senz.Attr["oemapi"])
+}
+
+func notifyPrint() {
 	// json req
 	obj := NotifyPnt{
 		Oem:    "oem1",
@@ -62,9 +90,14 @@ func notifyPrnt() {
 		Status: "SUCCESS",
 	}
 	j, _ := json.Marshal(obj)
+	notify(j, apiConfig.prntApi)
+}
+
+func notify(j []byte, uri string) {
+	log.Printf("INFO: send request to, %s with %s", uri, string(j))
 
 	// new request
-	req, err := http.NewRequest("POST", apiConfig.prntApi, bytes.NewBuffer(j))
+	req, err := http.NewRequest("POST", uri, bytes.NewBuffer(j))
 	req.Header.Set("Content-Type", "application/json")
 
 	// send request
