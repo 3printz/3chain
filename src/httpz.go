@@ -41,26 +41,7 @@ func notifyPord() {
 		Status: "SUCCESS",
 	}
 	j, _ := json.Marshal(obj)
-
-	// new request
-	req, err := http.NewRequest("POST", apiConfig.poApi, bytes.NewBuffer(j))
-	req.Header.Set("Content-Type", "application/json")
-
-	// send request
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		log.Printf("ERROR: fail request, %s", err.Error())
-		return
-	}
-	defer resp.Body.Close()
-	b, _ := ioutil.ReadAll(resp.Body)
-
-	// status
-	if resp.StatusCode != 200 {
-		log.Printf("ERROR: fail request, status: %s response: %s", resp.StatusCode, string(b))
-		return
-	}
+	notify(j, apiConfig.poApi)
 }
 
 func notifyPorder(senz Senz) {
@@ -81,7 +62,7 @@ func notifyPorder(senz Senz) {
 	notify(j, senz.Attr["oemapi"])
 }
 
-func notifyPrint() {
+func notifyPrnt() {
 	// json req
 	obj := NotifyPnt{
 		Oem:    "oem1",
